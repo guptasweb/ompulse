@@ -1,0 +1,101 @@
+{
+  "name": "OmPulse - Spiritual Stock Tracker",
+  "short_name": "OmPulse",
+  "description": "Where Finance Meets Mindfulness - Conscious investing with spiritual wisdom",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#764ba2",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "categories": ["finance", "lifestyle", "wellness"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/static/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/static/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Daily Meditation",
+      "short_name": "Meditate",
+      "description": "Access today's market meditation",
+      "url": "/?section=meditation",
+      "icons": [{ "src": "/static/icons/meditation-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Astro Forecast",
+      "short_name": "Cosmic",
+      "description": "Check today's cosmic market forecast",
+      "url": "/?section=astrology",
+      "icons": [{ "src": "/static/icons/astro-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Live Stream",
+      "short_name": "Live",
+      "description": "Watch live market energy",
+      "url": "/?section=live",
+      "icons": [{ "src": "/static/icons/live-icon.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/screenshots/mobile-home.png",
+      "sizes": "320x640",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/static/screenshots/mobile-meditation.png",
+      "sizes": "320x640", 
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+} 

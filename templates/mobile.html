@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#764ba2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OmPulse">
+    
+    <title>🧘 OmPulse - Spiritual Stock Tracker</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <!-- App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/icon-16x16.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        /* Mobile Aura Modes */
+        .aura-bullish {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .aura-bearish {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+        
+        .aura-calm {
+            background: linear-gradient(135deg, #2dd4bf 0%, #c084fc 100%);
+        }
+        
+        /* Mobile Container */
+        .mobile-container {
+            padding: 10px;
+            max-width: 100vw;
+        }
+        
+        /* Mobile Header */
+        .mobile-header {
+            text-align: center;
+            padding: 20px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+        
+        .mobile-logo {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+        
+        .mobile-tagline {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        /* Mobile Navigation - Bottom Tab Bar */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+        
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            color: #666;
+            min-width: 60px;
+        }
+        
+        .nav-tab.active {
+            color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+        }
+        
+        .nav-tab-icon {
+            font-size: 1.8em;
+            margin-bottom: 4px;
+        }
+        
+        .nav-tab-label {
+            font-size: 0.7em;
+            font-weight: 500;
+        }
+        
+        /* Mobile Content Sections */
+        .mobile-section {
+            display: none;
+            padding-bottom: 100px; /* Space for bottom nav */
+        }
+        
+        .mobile-section.active {
+            display: block;
+        }
+        
+        /* Mobile Cards */
+        .mobile-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .mobile-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        /* Mobile Stock List */
+        .mobile-stock-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .mobile-stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border-left: 4px solid transparent;
+        }
+        
+        .mobile-stock-item.positive {
+            border-left-color: #4CAF50;
+        }
+        
+        .mobile-stock-item.negative {
+            border-left-color: #F44336;
+        }
+        
+        .mobile-stock-symbol {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .mobile-stock-message {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .mobile-stock-price {
+            text-align: right;
+        }
+        
+        .mobile-price-change {
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        /* Mobile Meditation */
+        .mobile-meditation {
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .mobile-affirmation {
+            font-size: 1.1em;
+            font-style: italic;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #FFD700;
+        }
+        
+        .mobile-mantra {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+        }
+        
+        /* Mobile Controls */
+        .mobile-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .mobile-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 120px;
+        }
+        
+        .mobile-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .mobile-input {
+            flex: 2;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+        }
+        
+        .mobile-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Mobile Loading */
+        .mobile-zen-loader {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Mobile Cosmic Info */
+        .mobile-cosmic {
+            text-align: center;
+        }
+        
+        .mobile-lunar-phase {
+            font-size: 3em;
+            margin: 15px 0;
+        }
+        
+        .mobile-cosmic-message {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+        
+        /* Touch-friendly interactions */
+        .touchable {
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .touchable:active {
+            transform: scale(0.98);
+        }
+        
+        /* Status indicator */
+        .mobile-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            font-size: 0.8em;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status-online { color: #4CAF50; }
+        .status-offline { color: #FF9800; }
+        
+        /* Safe area handling for notched phones */
+        .mobile-container {
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-left: max(10px, env(safe-area-inset-left));
+            padding-right: max(10px, env(safe-area-inset-right));
+        }
+        
+        /* Mobile Watchlist Styles */
+        .mobile-watchlist-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+        
+        .mobile-watchlist-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.9em;
+            animation: tagFadeIn 0.3s ease;
+        }
+        
+        .mobile-tag-remove {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-tag-remove:hover {
+            background: #ff6b6b;
+        }
+        
+        .mobile-preset-row {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .mobile-preset-row select {
+            flex: 1;
+            font-size: 0.8em;
+        }
+        
+        .mobile-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .mobile-btn-small {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 0.8em;
+        }
+        
+        .mobile-btn-small:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .mobile-watchlist-empty {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        /* Vibration feedback helper */
+        .vibrate-on-tap {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body id="mobile-app">
+    <!-- Connection Status -->
+    <div class="mobile-status" id="status-indicator">
+        <span id="status-text">🌊 Connecting...</span>
+    </div>
+    
+    <div class="mobile-container">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <div class="mobile-logo">🧘 OmPulse</div>
+            <div class="mobile-tagline">Spiritual Stock Tracker</div>
+        </header>
+        
+        <!-- Home Section -->
+        <section id="home-section" class="mobile-section active">
+            <!-- Mobile Watchlist Management -->
+            <div class="mobile-card">
+                <h3>🌸 Your Sacred Watchlist</h3>
+                <div class="mobile-controls">
+                    <input type="text" id="mobile-symbols" class="mobile-input" 
+                           placeholder="Add symbols (AAPL, GOOGL, TSLA)" onkeypress="handleMobileWatchlistKeyPress(event)">
+                    <button class="mobile-btn touchable vibrate-on-tap" onclick="addToMobileWatchlist()">
+                        ✨ Add
+                    </button>
+                </div>
+                
+                <div id="mobile-watchlist-tags" class="mobile-watchlist-tags"></div>
+                
+                <div class="mobile-preset-row">
+                    <select id="mobile-preset" class="mobile-input">
+                        <option value="">Choose preset...</option>
+                        <option value="tech">🔮 Tech (AAPL,GOOGL,MSFT,TSLA,NVDA)</option>
+                        <option value="stable">🧘 Stable (JPM,JNJ,PG,KO,WMT)</option>
+                        <option value="growth">🌱 Growth (AMZN,META,NFLX,SHOP,SQ)</option>
+                        <option value="crypto">💎 Crypto (COIN,MSTR,RIOT,MARA,HUT)</option>
+                    </select>
+                    <button class="mobile-btn touchable vibrate-on-tap" onclick="loadMobilePreset()">
+                        Load
+                    </button>
+                </div>
+                
+                <div class="mobile-actions">
+                    <button class="mobile-btn-small touchable vibrate-on-tap" onclick="clearMobileWatchlist()">Clear</button>
+                    <button class="mobile-btn-small touchable vibrate-on-tap" onclick="exportMobileWatchlist()">Export</button>
+                </div>
+            </div>
+            
+            <div class="mobile-card">
+                <h3>🌊 Live Market Stream</h3>
+                <div class="mobile-stock-list" id="mobile-stock-list">
+                    <div class="mobile-stock-item">
+                        <div>
+                            <div class="mobile-stock-symbol">Connecting...</div>
+                            <div class="mobile-stock-message">🌸 Establishing sacred connection</div>
+                        </div>
+                        <div class="mobile-zen-loader"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-card">
+                <h3>🌍 Market Consciousness</h3>
+                <div id="mobile-sentiment">
+                    <div class="mobile-zen-loader"></div>
+                    <p>Sensing collective energy...</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Meditation Section -->
+        <section id="meditation-section" class="mobile-section">
+            <div class="mobile-card">
+                <h3>🌅 Daily Market Meditation</h3>
+                <div class="mobile-meditation" id="mobile-meditation">
+                    <div class="mobile-zen-loader"></div>
+                    <p>Channeling today's wisdom...</p>
+                </div>
+            </div>
+            
+            <div class="mobile-card">
+                <h3>🧘 Quick Practices</h3>
+                <button class="mobile-btn touchable vibrate-on-tap" onclick="requestMobileMeditation()">
+                    💫 Meditation Moment
+                </button>
+            </div>
+        </section>
+        
+        <!-- Astrology Section -->
+        <section id="astro-section" class="mobile-section">
+            <div class="mobile-card">
+                <h3>🌟 Cosmic Forecast</h3>
+                <div class="mobile-cosmic" id="mobile-cosmic">
+                    <div class="mobile-zen-loader"></div>
+                    <p>Reading celestial patterns...</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Portfolio Section -->
+        <section id="portfolio-section" class="mobile-section">
+            <div class="mobile-card">
+                <h3>⚖️ Portfolio Karma</h3>
+                <p style="text-align: center; opacity: 0.8; margin: 20px 0;">
+                    Portfolio analysis coming soon...
+                </p>
+                <button class="mobile-btn touchable vibrate-on-tap" onclick="analyzeMobilePortfolio()">
+                    🔮 Analyze Energy
+                </button>
+            </div>
+        </section>
+        
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="mobile-section">
+            <div class="mobile-card">
+                <h3>∞ Analytics</h3>
+                <p style="text-align: center; opacity: 0.8; margin: 20px 0;">
+                    Advanced analytics in development...
+                </p>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+        <div class="nav-tab active touchable vibrate-on-tap" data-section="home">
+            <div class="nav-tab-icon">🪷</div>
+            <div class="nav-tab-label">Home</div>
+        </div>
+        <div class="nav-tab touchable vibrate-on-tap" data-section="meditation">
+            <div class="nav-tab-icon">🧘</div>
+            <div class="nav-tab-label">Meditation</div>
+        </div>
+        <div class="nav-tab touchable vibrate-on-tap" data-section="astro">
+            <div class="nav-tab-icon">🔮</div>
+            <div class="nav-tab-label">Astrology</div>
+        </div>
+        <div class="nav-tab touchable vibrate-on-tap" data-section="portfolio">
+            <div class="nav-tab-icon">⚖️</div>
+            <div class="nav-tab-label">Portfolio</div>
+        </div>
+        <div class="nav-tab touchable vibrate-on-tap" data-section="analytics">
+            <div class="nav-tab-icon">∞</div>
+            <div class="nav-tab-label">Analytics</div>
+        </div>
+    </nav>
+    
+    <script>
+        // Mobile app initialization
+        let mobileWs = null;
+        let isOnline = navigator.onLine;
+        
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('🌸 OmPulse SW registered:', registration);
+                    })
+                    .catch(error => {
+                        console.log('🌫️ SW registration failed:', error);
+                    });
+            });
+        }
+        
+        // Mobile navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                const section = this.dataset.section;
+                showMobileSection(section);
+                
+                // Update active tab
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        function showMobileSection(sectionName) {
+            document.querySelectorAll('.mobile-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${sectionName}-section`).classList.add('active');
+        }
+        
+        // WebSocket connection for mobile
+        function connectMobileWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const symbols = mobileUserWatchlist.length > 0 ? mobileUserWatchlist.join(',') : 'AAPL,GOOGL,MSFT,TSLA';
+            const wsUrl = `${protocol}//${window.location.host}/api/stocks/live-stream?symbols=${symbols}`;
+            
+            console.log(`🌊 Mobile connecting to sacred stream with symbols: ${symbols}`);
+            mobileWs = new WebSocket(wsUrl);
+            
+            mobileWs.onopen = function() {
+                updateStatus('online', '🌊 Connected');
+            };
+            
+            mobileWs.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                handleMobileMessage(data);
+            };
+            
+            mobileWs.onclose = function() {
+                updateStatus('offline', '🌫️ Disconnected');
+                setTimeout(connectMobileWebSocket, 5000);
+            };
+        }
+        
+        function handleMobileMessage(data) {
+            switch(data.type) {
+                case 'stock_update':
+                    updateMobileStock(data);
+                    break;
+                case 'market_sentiment':
+                    updateMobileSentiment(data);
+                    updateMobileAura(data.sentiment);
+                    break;
+                case 'meditation_reminder':
+                    showMobileMeditation(data.message);
+                    break;
+            }
+        }
+        
+        function updateMobileStock(data) {
+            const stockList = document.getElementById('mobile-stock-list');
+            const existingItem = stockList.querySelector(`[data-symbol="${data.symbol}"]`);
+            
+            const changeClass = data.change >= 0 ? 'positive' : 'negative';
+            const stockHtml = `
+                <div class="mobile-stock-item ${changeClass}" data-symbol="${data.symbol}">
+                    <div>
+                        <div class="mobile-stock-symbol">${data.symbol} ${data.pulse_emoji}</div>
+                        <div class="mobile-stock-message">${data.spiritual_message}</div>
+                    </div>
+                    <div class="mobile-stock-price">
+                        <div>$${data.price}</div>
+                        <div class="mobile-price-change" style="color: ${data.change >= 0 ? '#4CAF50' : '#F44336'}">
+                            ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)} (${data.change_percent.toFixed(1)}%)
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (existingItem) {
+                existingItem.outerHTML = stockHtml;
+            } else {
+                // Clear loading state
+                if (stockList.querySelector('.mobile-zen-loader')) {
+                    stockList.innerHTML = '';
+                }
+                stockList.innerHTML += stockHtml;
+            }
+        }
+        
+        function updateMobileSentiment(data) {
+            const sentimentDiv = document.getElementById('mobile-sentiment');
+            sentimentDiv.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 10px;">${getMobileSentimentEmoji(data.sentiment)}</div>
+                    <div style="font-weight: bold; margin-bottom: 10px;">${data.sentiment.toUpperCase()}</div>
+                    <div style="margin-bottom: 15px; font-size: 0.95em;">${data.message}</div>
+                    <div style="font-size: 0.85em; opacity: 0.8; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        ${data.meditation_moment}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getMobileSentimentEmoji(sentiment) {
+            const emojis = {
+                'calm': '🧘', 'rising': '🌱', 'soaring': '🦅',
+                'descending': '🍃', 'turbulent': '🌊'
+            };
+            return emojis[sentiment] || '✨';
+        }
+        
+        function updateMobileAura(sentiment) {
+            const body = document.getElementById('mobile-app');
+            body.className = '';
+            
+            if (sentiment === 'soaring' || sentiment === 'rising') {
+                body.classList.add('aura-bullish');
+            } else if (sentiment === 'turbulent' || sentiment === 'descending') {
+                body.classList.add('aura-bearish');
+            } else {
+                body.classList.add('aura-calm');
+            }
+        }
+        
+        function updateStatus(status, text) {
+            const indicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            indicator.className = `mobile-status status-${status}`;
+            statusText.textContent = text;
+        }
+        
+        // Enhanced Mobile Watchlist Management
+        let mobileUserWatchlist = JSON.parse(localStorage.getItem('ompulse_watchlist')) || ['AAPL', 'GOOGL', 'MSFT', 'TSLA'];
+        
+        function addToMobileWatchlist() {
+            const input = document.getElementById('mobile-symbols');
+            const symbols = input.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s.length > 0);
+            
+            symbols.forEach(symbol => {
+                if (symbol && !mobileUserWatchlist.includes(symbol)) {
+                    mobileUserWatchlist.push(symbol);
+                }
+            });
+            
+            input.value = '';
+            saveMobileWatchlist();
+            updateMobileWatchlistDisplay();
+            reconnectMobileWebSocket();
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([50, 30, 50]);
+            }
+        }
+        
+        function removeFromMobileWatchlist(symbol) {
+            mobileUserWatchlist = mobileUserWatchlist.filter(s => s !== symbol);
+            saveMobileWatchlist();
+            updateMobileWatchlistDisplay();
+            reconnectMobileWebSocket();
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([100]);
+            }
+        }
+        
+        function clearMobileWatchlist() {
+            if (confirm('🌸 Clear your entire sacred watchlist? This cannot be undone.')) {
+                mobileUserWatchlist = [];
+                saveMobileWatchlist();
+                updateMobileWatchlistDisplay();
+                reconnectMobileWebSocket();
+                
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+            }
+        }
+        
+        function loadMobilePreset() {
+            const preset = document.getElementById('mobile-preset').value;
+            const presets = {
+                'tech': ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'NVDA'],
+                'stable': ['JPM', 'JNJ', 'PG', 'KO', 'WMT'],
+                'growth': ['AMZN', 'META', 'NFLX', 'SHOP', 'SQ'],
+                'crypto': ['COIN', 'MSTR', 'RIOT', 'MARA', 'HUT']
+            };
+            
+            if (preset && presets[preset]) {
+                mobileUserWatchlist = [...presets[preset]];
+                saveMobileWatchlist();
+                updateMobileWatchlistDisplay();
+                reconnectMobileWebSocket();
+                document.getElementById('mobile-preset').value = '';
+                
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate([50, 50, 50, 50, 50]);
+                }
+            }
+        }
+        
+        function exportMobileWatchlist() {
+            const watchlistText = mobileUserWatchlist.join(', ');
+            if (navigator.share) {
+                navigator.share({
+                    title: '🌟 My OmPulse Watchlist',
+                    text: watchlistText
+                });
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(watchlistText).then(() => {
+                    alert(`🌟 Watchlist copied:\n${watchlistText}`);
+                });
+            } else {
+                prompt('📋 Copy your watchlist:', watchlistText);
+            }
+        }
+        
+        function handleMobileWatchlistKeyPress(event) {
+            if (event.key === 'Enter') {
+                addToMobileWatchlist();
+            }
+        }
+        
+        function saveMobileWatchlist() {
+            localStorage.setItem('ompulse_watchlist', JSON.stringify(mobileUserWatchlist));
+        }
+        
+        function updateMobileWatchlistDisplay() {
+            const container = document.getElementById('mobile-watchlist-tags');
+            
+            if (mobileUserWatchlist.length === 0) {
+                container.innerHTML = '<div class="mobile-watchlist-empty">🌸 Your sacred watchlist is empty. Add some symbols to begin your journey.</div>';
+                return;
+            }
+            
+            container.innerHTML = mobileUserWatchlist.map(symbol => `
+                <div class="mobile-watchlist-tag">
+                    <span class="mobile-tag-symbol">${symbol}</span>
+                    <button class="mobile-tag-remove touchable" onclick="removeFromMobileWatchlist('${symbol}')" title="Remove ${symbol}">
+                        ×
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function reconnectMobileWebSocket() {
+            if (mobileWs) {
+                mobileWs.close();
+            }
+            setTimeout(connectMobileWebSocket, 500);
+        }
+        
+        function requestMobileMeditation() {
+            if (mobileWs && mobileWs.readyState === WebSocket.OPEN) {
+                mobileWs.send(JSON.stringify({
+                    action: 'meditation_request'
+                }));
+            }
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+        }
+        
+        function showMobileMeditation(message) {
+            // Create mobile-friendly meditation popup
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255, 255, 255, 0.95);
+                color: #333;
+                padding: 30px 25px;
+                border-radius: 20px;
+                text-align: center;
+                z-index: 2000;
+                backdrop-filter: blur(15px);
+                max-width: 90vw;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            `;
+            popup.innerHTML = `
+                <div style="font-size: 2.5em; margin-bottom: 15px;">🧘</div>
+                <div style="margin-bottom: 20px; line-height: 1.5; font-size: 1.1em;">${message}</div>
+                <button onclick="this.parentElement.remove()" 
+                        style="padding: 12px 25px; border: none; border-radius: 25px; 
+                               background: #667eea; color: white; cursor: pointer; font-weight: bold;">
+                    Thank You 🙏
+                </button>
+            `;
+            document.body.appendChild(popup);
+            
+            // Vibration pattern for meditation
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            setTimeout(() => popup.remove(), 10000);
+        }
+        
+        // Load mobile meditation data
+        async function loadMobileMeditation() {
+            try {
+                const response = await fetch('/api/meditation/daily');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const meditation = data.meditation;
+                    document.getElementById('mobile-meditation').innerHTML = `
+                        <div class="mobile-affirmation">${meditation.market_affirmation}</div>
+                        <div style="margin: 15px 0; font-size: 0.9em;">
+                            <strong>🌬️ Breathing:</strong><br>
+                            ${meditation.breathing_exercise}
+                        </div>
+                        <div class="mobile-mantra">${meditation.mantra}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('mobile-meditation').innerHTML = `
+                    <div class="mobile-affirmation">🌫️ Meditation temporarily clouded</div>
+                    <div class="mobile-mantra">🕉️ I trust my inner wisdom</div>
+                `;
+            }
+        }
+        
+        // Load mobile astro data
+        async function loadMobileAstro() {
+            try {
+                const response = await fetch('/api/astro/daily-forecast');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const forecast = data.forecast;
+                    document.getElementById('mobile-cosmic').innerHTML = `
+                        <div class="mobile-lunar-phase">${forecast.lunar_phase.split(' ')[0]}</div>
+                        <div style="font-weight: bold; margin-bottom: 15px;">${forecast.overall_energy}</div>
+                        <div class="mobile-cosmic-message">${forecast.market_prediction}</div>
+                        <div style="font-size: 0.9em; opacity: 0.8; font-style: italic;">${forecast.cosmic_advice}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('mobile-cosmic').innerHTML = `
+                    <div class="mobile-lunar-phase">🌙</div>
+                    <div class="mobile-cosmic-message">🌫️ Cosmic signals unclear</div>
+                `;
+            }
+        }
+        
+        function analyzeMobilePortfolio() {
+            // Placeholder for portfolio analysis
+            alert('🔮 Portfolio karma analysis coming soon to mobile!');
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+        
+        // Online/offline handling
+        window.addEventListener('online', () => {
+            isOnline = true;
+            updateStatus('online', '🌊 Connected');
+            connectMobileWebSocket();
+        });
+        
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            updateStatus('offline', '🧘 Offline');
+        });
+        
+        // Initialize mobile app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧘 OmPulse Mobile initializing...');
+            
+            // Add PWA install prompt handling
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                deferredPrompt = e;
+                console.log('🌸 PWA install prompt available');
+            });
+            
+            updateMobileWatchlistDisplay();
+            connectMobileWebSocket();
+            loadMobileMeditation();
+            loadMobileAstro();
+            
+            // Add touch sound feedback
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.classList.contains('vibrate-on-tap') && navigator.vibrate) {
+                    navigator.vibrate(25);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

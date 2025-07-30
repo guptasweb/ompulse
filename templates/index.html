@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧘 OmPulse - Spiritual Stock Market Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        
+        /* Aura Mode Styles */
+        .aura-bullish {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.3);
+        }
+        
+        .aura-bearish {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            box-shadow: 0 0 30px rgba(255, 154, 158, 0.3);
+        }
+        
+        .aura-calm {
+            background: linear-gradient(135deg, #2dd4bf 0%, #c084fc 100%);
+            box-shadow: 0 0 30px rgba(45, 212, 191, 0.4);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 1.2em;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        /* Sacred Navigation */
+        .sacred-nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .nav-icon {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        /* Main Content Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .widget h3 {
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            text-align: center;
+        }
+        
+        /* Live Ticker */
+        .live-ticker {
+            height: 300px;
+            overflow-y: auto;
+        }
+        
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .stock-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .stock-symbol {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .stock-price {
+            text-align: right;
+        }
+        
+        .energy-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .energy-calm { background: #4CAF50; }
+        .energy-rising { background: #8BC34A; }
+        .energy-soaring { background: #FFC107; }
+        .energy-descending { background: #FF9800; }
+        .energy-turbulent { background: #F44336; }
+        
+        /* Meditation Widget */
+        .meditation-content {
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .affirmation {
+            font-size: 1.1em;
+            font-style: italic;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .mantra {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-top: 15px;
+        }
+        
+        /* Astro Widget */
+        .cosmic-info {
+            text-align: center;
+        }
+        
+        .lunar-phase {
+            font-size: 2em;
+            margin: 15px 0;
+        }
+        
+        .planetary-influence {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .input-field {
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-100vh) rotate(360deg); opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sacred-nav {
+                gap: 15px;
+            }
+            
+            .nav-item {
+                min-width: 100px;
+                padding: 12px 20px;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        /* Zen Loading Animation */
+        .zen-loader {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Watchlist Management Styles */
+        .watchlist-manager {
+            text-align: center;
+        }
+        
+        .watchlist-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .watchlist-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            animation: tagFadeIn 0.3s ease;
+        }
+        
+        .watchlist-tag:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tag-symbol {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .tag-remove {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tag-remove:hover {
+            background: #ff6b6b;
+            transform: scale(1.2);
+        }
+        
+        .preset-options select {
+            text-align: center;
+            text-align-last: center;
+        }
+        
+        @keyframes tagFadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .watchlist-empty {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body id="app-body">
+    <div class="container">
+        <header>
+            <div class="logo">🧘 OmPulse</div>
+            <div class="tagline">Where Your Portfolio Finds Its Center</div>
+        </header>
+        
+        <!-- Sacred Navigation -->
+        <nav class="sacred-nav">
+            <div class="nav-item" onclick="showSection('dashboard')">
+                <span class="nav-icon">🪷</span>
+                <div>Home</div>
+            </div>
+            <div class="nav-item" onclick="showSection('meditation')">
+                <span class="nav-icon">🧘</span>
+                <div>Meditation</div>
+            </div>
+            <div class="nav-item" onclick="showSection('astrology')">
+                <span class="nav-icon">🔮</span>
+                <div>Astrology</div>
+            </div>
+            <div class="nav-item" onclick="showSection('portfolio')">
+                <span class="nav-icon">⚖️</span>
+                <div>Portfolio</div>
+            </div>
+            <div class="nav-item" onclick="showSection('analytics')">
+                <span class="nav-icon">∞</span>
+                <div>Analytics</div>
+            </div>
+        </nav>
+        
+        <!-- Sacred Watchlist Management -->
+        <div class="widget" style="margin-bottom: 30px;">
+            <h3>🌸 Your Sacred Watchlist</h3>
+            <div class="watchlist-manager">
+                <div class="controls">
+                    <input type="text" id="symbolInput" class="input-field" placeholder="Add symbols (e.g., AAPL, GOOGL, TSLA)" onkeypress="handleWatchlistKeyPress(event)">
+                    <button class="btn" onclick="addToWatchlist()">✨ Add Symbol</button>
+                    <button class="btn" onclick="loadPresetWatchlist()">🌟 Load Preset</button>
+                    <button class="btn" onclick="clearWatchlist()">🗑️ Clear All</button>
+                </div>
+                
+                <div id="watchlist-tags" class="watchlist-tags"></div>
+                
+                <div class="preset-options" style="margin-top: 15px;">
+                    <select id="presetSelect" class="input-field" style="min-width: 200px;">
+                        <option value="">Choose a preset...</option>
+                        <option value="tech">🔮 Tech Spirituality (AAPL,GOOGL,MSFT,TSLA,NVDA)</option>
+                        <option value="stable">🧘 Zen Stability (JPM,JNJ,PG,KO,WMT)</option>
+                        <option value="growth">🌱 Growth Energy (AMZN,META,NFLX,SHOP,SQ)</option>
+                        <option value="crypto">💎 Digital Karma (COIN,MSTR,RIOT,MARA,HUT)</option>
+                        <option value="dividend">🌿 Passive Flow (VTI,SPY,SCHD,VYM,VXUS)</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+                    <button class="btn" onclick="toggleAuraMode()">🎨 Toggle Aura Mode</button>
+                    <button class="btn" onclick="requestMeditation()">🧘 Meditation Moment</button>
+                    <button class="btn" onclick="exportWatchlist()">📤 Export List</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Dashboard -->
+        <div class="dashboard" id="main-content">
+            
+            <!-- Live Ticker Widget -->
+            <div class="widget">
+                <h3>🌊 Live Market Stream</h3>
+                <div class="live-ticker" id="live-ticker">
+                    <div class="stock-item">
+                        <div>
+                            <div class="stock-symbol">Connecting...</div>
+                            <div style="font-size: 0.9em; opacity: 0.8;">🌸 Establishing sacred connection to market stream</div>
+                        </div>
+                        <div class="zen-loader"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Daily Meditation Widget -->
+            <div class="widget">
+                <h3>🌅 Daily Market Meditation</h3>
+                <div class="meditation-content" id="meditation-content">
+                    <div class="zen-loader"></div>
+                    <p>Loading today's spiritual guidance...</p>
+                </div>
+            </div>
+            
+            <!-- Astrology Widget -->
+            <div class="widget">
+                <h3>🌟 Cosmic Market Forecast</h3>
+                <div class="cosmic-info" id="cosmic-info">
+                    <div class="zen-loader"></div>
+                    <p>Reading celestial patterns...</p>
+                </div>
+            </div>
+            
+            <!-- Market Sentiment Widget -->
+            <div class="widget">
+                <h3>🌍 Collective Market Energy</h3>
+                <div id="market-sentiment">
+                    <div class="zen-loader"></div>
+                    <p>Sensing market consciousness...</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Floating particles for zen atmosphere -->
+    <script>
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 15000);
+        }
+        
+        // Create particles periodically
+        setInterval(createParticle, 2000);
+        
+        // WebSocket connection for live data
+        let ws = null;
+        let currentAuraMode = 'calm';
+        
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const symbols = userWatchlist.length > 0 ? userWatchlist.join(',') : 'AAPL,GOOGL,MSFT,TSLA';
+            const wsUrl = `${protocol}//${window.location.host}/api/stocks/live-stream?symbols=${symbols}`;
+            
+            console.log(`🌊 Connecting to sacred stream with symbols: ${symbols}`);
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function() {
+                console.log('🌊 Connected to OmPulse stream');
+                updateConnectionStatus('🌸 Connected to sacred market stream');
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                handleWebSocketMessage(data);
+            };
+            
+            ws.onclose = function() {
+                console.log('🌫️ Stream connection closed');
+                updateConnectionStatus('🌫️ Stream disconnected - attempting reconnection...');
+                setTimeout(connectWebSocket, 5000);
+            };
+            
+            ws.onerror = function(error) {
+                console.error('Stream error:', error);
+                updateConnectionStatus('🌫️ Stream energy disrupted');
+            };
+        }
+        
+        function handleWebSocketMessage(data) {
+            switch(data.type) {
+                case 'connection':
+                    updateConnectionStatus(data.message);
+                    break;
+                case 'stock_update':
+                    updateStockDisplay(data);
+                    break;
+                case 'market_sentiment':
+                    updateMarketSentiment(data);
+                    updateAuraMode(data.sentiment);
+                    break;
+                case 'meditation_reminder':
+                    showMeditationReminder(data.message);
+                    break;
+            }
+        }
+        
+        function updateConnectionStatus(message) {
+            const ticker = document.getElementById('live-ticker');
+            if (ticker.children.length === 1 && ticker.children[0].textContent.includes('Connecting')) {
+                ticker.innerHTML = `<div class="stock-item"><div><div class="stock-symbol">Connected</div><div style="font-size: 0.9em; opacity: 0.8;">${message}</div></div></div>`;
+            }
+        }
+        
+        function updateStockDisplay(data) {
+            const ticker = document.getElementById('live-ticker');
+            const existingItem = Array.from(ticker.children).find(item => 
+                item.querySelector('.stock-symbol')?.textContent === data.symbol
+            );
+            
+            const changeClass = data.change >= 0 ? 'positive' : 'negative';
+            const energyClass = `energy-${data.energy_level}`;
+            
+            const stockHtml = `
+                <div class="stock-item">
+                    <div>
+                        <div class="stock-symbol">${data.symbol} ${data.pulse_emoji}</div>
+                        <div style="font-size: 0.8em; opacity: 0.8;">${data.spiritual_message}</div>
+                    </div>
+                    <div class="stock-price">
+                        <div>$${data.price}</div>
+                        <div style="color: ${data.change >= 0 ? '#4CAF50' : '#F44336'}">
+                            ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)} (${data.change_percent.toFixed(2)}%)
+                        </div>
+                        <div class="energy-indicator ${energyClass}"></div>
+                    </div>
+                </div>
+            `;
+            
+            if (existingItem) {
+                existingItem.outerHTML = stockHtml;
+            } else {
+                if (ticker.children[0]?.textContent.includes('Connected')) {
+                    ticker.innerHTML = '';
+                }
+                ticker.innerHTML += stockHtml;
+            }
+        }
+        
+        function updateMarketSentiment(data) {
+            const sentimentDiv = document.getElementById('market-sentiment');
+            sentimentDiv.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 1.5em; margin-bottom: 15px;">${getSentimentEmoji(data.sentiment)}</div>
+                    <div style="margin-bottom: 10px; font-weight: bold;">${data.sentiment.toUpperCase()}</div>
+                    <div style="margin-bottom: 15px;">${data.message}</div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">${data.meditation_moment}</div>
+                    <div style="margin-top: 15px;">
+                        Avg Change: <span style="color: ${data.average_change >= 0 ? '#4CAF50' : '#F44336'}">
+                            ${data.average_change >= 0 ? '+' : ''}${data.average_change.toFixed(2)}%
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getSentimentEmoji(sentiment) {
+            const emojis = {
+                'calm': '🧘',
+                'rising': '🌱',
+                'soaring': '🦅',
+                'descending': '🍃',
+                'turbulent': '🌊'
+            };
+            return emojis[sentiment] || '✨';
+        }
+        
+        function updateAuraMode(sentiment) {
+            const body = document.getElementById('app-body');
+            body.className = ''; // Clear existing classes
+            
+            if (sentiment === 'soaring' || sentiment === 'rising') {
+                body.classList.add('aura-bullish');
+                currentAuraMode = 'bullish';
+            } else if (sentiment === 'turbulent' || sentiment === 'descending') {
+                body.classList.add('aura-bearish');
+                currentAuraMode = 'bearish';
+            } else {
+                body.classList.add('aura-calm');
+                currentAuraMode = 'calm';
+            }
+        }
+        
+        function toggleAuraMode() {
+            const body = document.getElementById('app-body');
+            const modes = ['aura-calm', 'aura-bullish', 'aura-bearish'];
+            const currentMode = modes.find(mode => body.classList.contains(mode));
+            const currentIndex = modes.indexOf(currentMode);
+            const nextIndex = (currentIndex + 1) % modes.length;
+            
+            body.className = '';
+            body.classList.add(modes[nextIndex]);
+        }
+        
+        function showMeditationReminder(message) {
+            // Create a temporary meditation popup
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255, 255, 255, 0.95);
+                color: #333;
+                padding: 30px;
+                border-radius: 20px;
+                text-align: center;
+                z-index: 1000;
+                backdrop-filter: blur(10px);
+                max-width: 400px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            `;
+            popup.innerHTML = `
+                <div style="font-size: 2em; margin-bottom: 15px;">🧘</div>
+                <div style="margin-bottom: 20px; line-height: 1.5;">${message}</div>
+                <button onclick="this.parentElement.remove()" style="padding: 10px 20px; border: none; border-radius: 15px; background: #667eea; color: white; cursor: pointer;">
+                    Thank You 🙏
+                </button>
+            `;
+            document.body.appendChild(popup);
+            
+            // Auto-remove after 8 seconds
+            setTimeout(() => popup.remove(), 8000);
+        }
+        
+        // API Functions
+        async function loadDailyMeditation() {
+            try {
+                const response = await fetch('/api/meditation/daily');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const meditation = data.meditation;
+                    document.getElementById('meditation-content').innerHTML = `
+                        <div class="affirmation">${meditation.market_affirmation}</div>
+                        <div style="margin: 15px 0;">
+                            <strong>🌬️ Breathing Practice:</strong><br>
+                            ${meditation.breathing_exercise}
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <strong>💎 Today's Wisdom:</strong><br>
+                            ${meditation.financial_wisdom}
+                        </div>
+                        <div class="mantra">${meditation.mantra}</div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Meditation loading error:', error);
+                document.getElementById('meditation-content').innerHTML = `
+                    <div>🌫️ Meditation channel temporarily clouded</div>
+                    <div class="mantra">🕉️ I trust my inner wisdom to guide me</div>
+                `;
+            }
+        }
+        
+        async function loadAstroForecast() {
+            try {
+                const response = await fetch('/api/astro/daily-forecast');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const forecast = data.forecast;
+                    document.getElementById('cosmic-info').innerHTML = `
+                        <div class="lunar-phase">${forecast.lunar_phase.split(' ')[0]}</div>
+                        <div style="margin-bottom: 15px;"><strong>${forecast.overall_energy}</strong></div>
+                        <div style="margin-bottom: 15px;">${forecast.market_prediction}</div>
+                        <div style="font-size: 0.9em; opacity: 0.8;">${forecast.cosmic_advice}</div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Astro loading error:', error);
+                document.getElementById('cosmic-info').innerHTML = `
+                    <div>🌫️ Cosmic signals unclear</div>
+                    <div>✨ Trust your inner knowing</div>
+                `;
+            }
+        }
+        
+        // Enhanced Watchlist Management
+        let userWatchlist = JSON.parse(localStorage.getItem('ompulse_watchlist')) || ['AAPL', 'GOOGL', 'MSFT', 'TSLA'];
+        
+        function addToWatchlist() {
+            const input = document.getElementById('symbolInput');
+            const symbols = input.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s.length > 0);
+            
+            symbols.forEach(symbol => {
+                if (symbol && !userWatchlist.includes(symbol)) {
+                    userWatchlist.push(symbol);
+                }
+            });
+            
+            input.value = '';
+            saveWatchlist();
+            updateWatchlistDisplay();
+            reconnectWebSocket();
+        }
+        
+        function removeFromWatchlist(symbol) {
+            userWatchlist = userWatchlist.filter(s => s !== symbol);
+            saveWatchlist();
+            updateWatchlistDisplay();
+            reconnectWebSocket();
+        }
+        
+        function clearWatchlist() {
+            if (confirm('🌸 Clear your entire sacred watchlist? This cannot be undone.')) {
+                userWatchlist = [];
+                saveWatchlist();
+                updateWatchlistDisplay();
+                reconnectWebSocket();
+            }
+        }
+        
+        function loadPresetWatchlist() {
+            const preset = document.getElementById('presetSelect').value;
+            const presets = {
+                'tech': ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'NVDA'],
+                'stable': ['JPM', 'JNJ', 'PG', 'KO', 'WMT'],
+                'growth': ['AMZN', 'META', 'NFLX', 'SHOP', 'SQ'],
+                'crypto': ['COIN', 'MSTR', 'RIOT', 'MARA', 'HUT'],
+                'dividend': ['VTI', 'SPY', 'SCHD', 'VYM', 'VXUS']
+            };
+            
+            if (preset && presets[preset]) {
+                userWatchlist = [...presets[preset]];
+                saveWatchlist();
+                updateWatchlistDisplay();
+                reconnectWebSocket();
+                document.getElementById('presetSelect').value = '';
+            }
+        }
+        
+        function exportWatchlist() {
+            const watchlistText = userWatchlist.join(', ');
+            navigator.clipboard.writeText(watchlistText).then(() => {
+                alert(`🌟 Watchlist copied to clipboard:\n${watchlistText}`);
+            }).catch(() => {
+                prompt('📋 Copy your watchlist:', watchlistText);
+            });
+        }
+        
+        function handleWatchlistKeyPress(event) {
+            if (event.key === 'Enter') {
+                addToWatchlist();
+            }
+        }
+        
+        function saveWatchlist() {
+            localStorage.setItem('ompulse_watchlist', JSON.stringify(userWatchlist));
+        }
+        
+        function updateWatchlistDisplay() {
+            const container = document.getElementById('watchlist-tags');
+            
+            if (userWatchlist.length === 0) {
+                container.innerHTML = '<div class="watchlist-empty">🌸 Your sacred watchlist is empty. Add some symbols to begin your journey.</div>';
+                return;
+            }
+            
+            container.innerHTML = userWatchlist.map(symbol => `
+                <div class="watchlist-tag">
+                    <span class="tag-symbol">${symbol}</span>
+                    <button class="tag-remove" onclick="removeFromWatchlist('${symbol}')" title="Remove ${symbol}">
+                        ×
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function reconnectWebSocket() {
+            if (ws) {
+                ws.close();
+            }
+            setTimeout(connectWebSocket, 500);
+        }
+        
+        function requestMeditation() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    action: 'meditation_request'
+                }));
+            }
+        }
+        
+        function showSection(section) {
+            // Simple section switching - in a full app you'd have proper routing
+            console.log(`Navigating to ${section} section`);
+            // For now, just highlight the clicked nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.background = 'rgba(255, 255, 255, 0.15)';
+            });
+            event.target.closest('.nav-item').style.background = 'rgba(255, 255, 255, 0.3)';
+        }
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧘 OmPulse initializing...');
+            updateWatchlistDisplay();
+            connectWebSocket();
+            loadDailyMeditation();
+            loadAstroForecast();
+        });
+    </script>
+</body>
+</html> 

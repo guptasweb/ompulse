@@ -218,3 +218,81 @@ async def search_symbols(query: str):
         "results": filtered[:10],  # Limit results
         "zen_guidance": "🔮 Let intuition guide you to the right investments for your journey"
     } 
+
+@router.post("/watchlist/save")
+async def save_watchlist(watchlist: dict):
+    """
+    🌸 Save a sacred watchlist to the cosmic consciousness
+    For syncing between devices or sharing your spiritual journey
+    """
+    try:
+        symbols = watchlist.get('symbols', [])
+        name = watchlist.get('name', 'My Sacred Watchlist')
+        
+        # In a real app, you'd save to database
+        # For now, return success with cosmic blessing
+        return {
+            "success": True,
+            "message": f"🌟 Your watchlist '{name}' has been blessed and saved to the cosmic cloud",
+            "symbols_count": len(symbols),
+            "spiritual_message": "Your investment intentions have been received by the universe 🙏"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "spiritual_guidance": "🌫️ The cosmic servers are temporarily clouded, but your intentions remain pure"
+        }
+
+@router.get("/watchlist/popular")
+async def get_popular_watchlists():
+    """
+    🌟 Get spiritually curated popular watchlists
+    Blessed combinations for different investment journeys
+    """
+    try:
+        popular_lists = {
+            "tech_spirituality": {
+                "name": "🔮 Tech Spirituality",
+                "symbols": ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA"],
+                "description": "Innovation meets consciousness",
+                "energy": "High growth potential with transformative power"
+            },
+            "zen_stability": {
+                "name": "🧘 Zen Stability", 
+                "symbols": ["JPM", "JNJ", "PG", "KO", "WMT"],
+                "description": "Peaceful dividend harmony",
+                "energy": "Stable, grounding energy for patient souls"
+            },
+            "growth_enlightenment": {
+                "name": "🌱 Growth Enlightenment",
+                "symbols": ["AMZN", "META", "NFLX", "SHOP", "SQ"],
+                "description": "Expanding consciousness through commerce",
+                "energy": "Dynamic growth with modern vision"
+            },
+            "digital_karma": {
+                "name": "💎 Digital Karma",
+                "symbols": ["COIN", "MSTR", "RIOT", "MARA", "HUT"],
+                "description": "Cryptocurrency consciousness",
+                "energy": "Volatile but revolutionary potential"
+            },
+            "passive_flow": {
+                "name": "🌿 Passive Flow",
+                "symbols": ["VTI", "SPY", "SCHD", "VYM", "VXUS"],
+                "description": "Effortless abundance through indexing",
+                "energy": "Steady, harmonious wealth accumulation"
+            }
+        }
+        
+        return {
+            "success": True,
+            "watchlists": popular_lists,
+            "message": "🌟 May these sacred combinations guide your investment journey",
+            "cosmic_advice": "Choose the watchlist that resonates with your financial soul 🙏"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "spiritual_guidance": "🌫️ The cosmic wisdom is temporarily veiled"
+        } 
